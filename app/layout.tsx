@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter";
 import "./globals.css";
 
+import { AiAssistant } from "@/components/AiAssistant";
 import { Cart } from "@/components/Cart";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -60,6 +61,7 @@ export default function RootLayout({
           </div>
           <Cart />
           <StickyCartBar />
+          <AiAssistant />
         </CartProvider>
       </body>
     </html>

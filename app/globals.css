@@ -148,3 +148,69 @@ body {
 [data-slot="sheet-panel"][data-state="closed"] {
   animation: sheet-out 0.24s ease-in both;
 }
+
+/* ---------------------------------------------------------------- */
+/* AI-ассистент: появление панели, сообщений и индикатора печати     */
+/* ---------------------------------------------------------------- */
+
+@keyframes assistant-pop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes assistant-msg {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes assistant-dot {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  35% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.assistant-panel {
+  animation: assistant-pop 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transform-origin: bottom right;
+}
+
+.assistant-msg {
+  animation: assistant-msg 0.25s ease-out both;
+}
+
+.assistant-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: var(--color-muted);
+  animation: assistant-dot 1s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-panel,
+  .assistant-msg,
+  .assistant-dot {
+    animation: none;
+    opacity: 1;
+  }
+}

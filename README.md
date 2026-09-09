@@ -51,8 +51,10 @@ components/
   Checkout.tsx          # «Куда доставить?»: имя/телефон/адрес/кв/комментарий + доставка/самовывоз
   OrderSuccess.tsx      # «Заказ принят 🔥 №SL-xxxx»
   StickyCartBar.tsx     # мобильная sticky-панель корзины внизу
+  AiAssistant.tsx       # плавающий AI-помощник: сценарные демо-ответы, без внешнего AI-API
   ui/                   # button, sheet, input, label, textarea (в стиле shadcn/ui)
 data/products.ts        # ЕДИНСТВЕННЫЙ источник товаров и цен
+lib/siteLinks.ts        # единые внешние ссылки (Telegram/VK) — футер и ассистент
 services/orderService.ts# submitOrder(): mock-сохранение заказа; здесь подключается Telegram
 lib/cart.ts             # чистые функции: localStorage, расчёты, форматирование
 lib/cart-context.tsx    # CartProvider (React Context + localStorage-персист)

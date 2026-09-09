@@ -1,5 +1,7 @@
 import { Send } from "lucide-react";
 
+import { siteLinks } from "@/lib/siteLinks";
+
 const navColumns = [
   {
     heading: "Навигация",
@@ -20,8 +22,8 @@ const navColumns = [
   {
     heading: "Мы на связи",
     links: [
-      { href: "https://t.me/shawarmalab", label: "Telegram", external: true },
-      { href: "https://vk.com/shawarmalab", label: "VK", external: true },
+      { href: siteLinks.telegram, label: "Telegram", external: true },
+      { href: siteLinks.vk, label: "VK", external: true },
     ],
   },
 ];
