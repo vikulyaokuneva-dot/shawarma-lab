@@ -158,21 +158,29 @@ function cartText(cart: CartItem[]): string {
   const lines = getLines(cart);
   const subtotal = getSubtotal(lines);
   const deliveryCost = getDeliveryCost(subtotal, "delivery");
-  const parts = [`🛒 Ваш заказ:\n\n${cartLinesText(lines)}`, ""];
+  // Компактность — часть UX: в Telegram нельзя докрутить ниже последнего
+  // сообщения, и высокая простыня с пустыми строками уводит inline-кнопку
+  // «🛒 Оформить заказ» за нижний клиппинг чата. Здесь только то, что нужно
+  // перед оформлением: позиции, доставка, итог.
+  const parts: string[] = ["🛒 Ваш заказ:", cartLinesText(lines)];
   if (deliveryCost === 0) {
-    parts.push(`🚚 Доставка: 0 ₽ — бесплатно 🎉`);
+    parts.push("🚚 Доставка: 0 ₽ — бесплатно 🎉");
   } else {
-    parts.push(`🚚 Доставка: ${formatPrice(deliveryCost)} (бесплатно от ${formatPrice(FREE_DELIVERY_THRESHOLD)})`);
+    parts.push(
+      `🚚 Доставка: ${formatPrice(deliveryCost)} (от ${formatPrice(FREE_DELIVERY_THRESHOLD)} — 0 ₽)`,
+    );
     const remaining = getRemainingForFreeDelivery(subtotal);
-    if (remaining > 0) parts.push(`   До бесплатной доставки: ${formatPrice(remaining)}`);
+    if (remaining > 0) parts.push(`💡 До бесплатной: ${formatPrice(remaining)}`);
   }
   parts.push(`💰 Итого: ${formatPrice(subtotal + deliveryCost)}`);
   return parts.join("\n");
 }
 
 const CART_KB = kb(
-  [["🛒 Оформить заказ", "c:go"], ["➕ Добавить ещё", "m:menu"]],
-  [["🗑 Очистить", "c:clear"]],
+  // Главный CTA — отдельным полноширинным рядом сразу под итогом;
+  // второстепенные действия — ниже, чтобы не конкурировать с «оформить».
+  [["🛒 Оформить заказ", "c:go"]],
+  [["➕ Добавить ещё", "m:menu"], ["🗑 Очистить", "c:clear"]],
 );
 
 function summaryText(session: BotSession): {
