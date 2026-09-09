@@ -129,7 +129,7 @@ function menuText(): string {
 
 function menuKeyboard(): InlineKeyboard {
   const rows = products.map(
-    (p): [string, string][] => [[`➕ ${p.name} — ${formatPrice(p.price)}`, `a:${p.id}`]],
+    (p): [string, string][] => [[`➕ Добавить: ${p.name}`, `a:${p.id}`]],
   );
   return kb(...rows);
 }
@@ -171,7 +171,7 @@ function cartText(cart: CartItem[]): string {
 }
 
 const CART_KB = kb(
-  [["✅ Оформить заказ", "c:go"], ["➕ Добавить ещё", "m:menu"]],
+  [["🛒 Оформить заказ", "c:go"], ["➕ Добавить ещё", "m:menu"]],
   [["🗑 Очистить", "c:clear"]],
 );
 

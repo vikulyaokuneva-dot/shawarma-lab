@@ -153,7 +153,7 @@ async function toConfirmExample(chatId, deps) {
   ok(cart.includes(`Доставка: ${formatPrice(DELIVERY_COST)}`), "cart: delivery 199");
   ok(cart.includes(`Итого: ${formatPrice(980 + DELIVERY_COST)}`), "cart: total 1179");
   const texts = buttonTexts(last(sent).keyboard);
-  ok(texts.includes("✅ Оформить заказ") && texts.includes("➕ Добавить ещё") && texts.includes("🗑 Очистить"), "cart: actions");
+  ok(texts.includes("🛒 Оформить заказ") && texts.includes("➕ Добавить ещё") && texts.includes("🗑 Очистить"), "cart: actions");
 }
 
 /* ------------------------------------------------------------------ */
