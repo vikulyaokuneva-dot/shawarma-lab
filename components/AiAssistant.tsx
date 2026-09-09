@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 
 import { products, type Product } from "@/data/products";
 import { DELIVERY_COST, FREE_DELIVERY_THRESHOLD, formatPrice } from "@/lib/cart";
@@ -390,7 +390,7 @@ function Bubble({
             >
               <div className="flex items-baseline justify-between gap-3">
                 <p className="text-[13px] font-bold tracking-[0.03em]">
-                  {product.name}
+                  {product.name}{" "}
                   {product.badge && (
                     <span
                       className={cn(
@@ -480,7 +480,6 @@ function MenuLink({ onClose }: { onClose: () => void }) {
       className="assistant-msg inline-flex h-9 items-center gap-1.5 rounded-full border border-accent/40 bg-accent/[0.08] px-3.5 text-[13px] font-semibold text-accent outline-none transition-colors hover:bg-accent/[0.15] focus-visible:ring-2 focus-visible:ring-accent"
     >
       🌯 Посмотреть в меню
-      <ArrowDown className="size-3.5" aria-hidden />
     </a>
   );
 }
