@@ -27,6 +27,12 @@ import {
   type CartLine,
 } from "@/lib/cart";
 import { getProductById, products } from "@/data/products";
+import {
+  PICKUP_ADDRESS,
+  cartLinesText,
+  formatAdminOrder,
+  productEmoji,
+} from "@/lib/telegram/adminOrder";
 import type { InlineKeyboard } from "@/lib/telegram/client";
 import {
   getOrCreateSession,
@@ -109,11 +115,8 @@ const CHOOSE_KB = kb(
   [["🥗 Классический вариант", "r:classic"]],
 );
 
-const DELIVERY_ADDRESS = "Москва, Лесная ул., 5";
-
-function productEmoji(productId: string): string {
-  return productId === "cheese-chicken" ? "🧀" : "🌯";
-}
+/* productEmoji/cartLinesText/PICKUP_ADDRESS — в lib/telegram/adminOrder.ts,
+ * чтобы формат заявки был один для бота и сайта. */
 
 /* ------------------------------------------------------------------ */
 /* Сборка текстов                                                      */
@@ -140,18 +143,9 @@ function deliveryText(): string {
     "⏱ Привозим за 30–40 минут\n" +
     "🕐 Ежедневно с 10:00 до 23:00\n" +
     `🛵 Доставка — ${formatPrice(DELIVERY_COST)}, бесплатно от ${formatPrice(FREE_DELIVERY_THRESHOLD)}\n` +
-    `🏪 Самовывоз — 0 ₽ (${DELIVERY_ADDRESS})\n` +
+    `🏪 Самовывоз — 0 ₽ (${PICKUP_ADDRESS})\n` +
     "💳 Оплата: картой или наличными"
   );
-}
-
-function cartLinesText(lines: CartLine[]): string {
-  return lines
-    .map(
-      (l) =>
-        `${productEmoji(l.product.id)} ${l.product.name} × ${l.quantity} — ${formatPrice(l.lineTotal)}`,
-    )
-    .join("\n");
 }
 
 function cartText(cart: CartItem[]): string {
@@ -196,7 +190,7 @@ function summaryText(session: BotSession): {
   const paymentLabel = session.checkout.payment === "cash" ? "наличными" : "картой";
   const addressLabel =
     method === "pickup"
-      ? `📍 Самовывоз: ${DELIVERY_ADDRESS}`
+      ? `📍 Самовывоз: ${PICKUP_ADDRESS}`
       : `📍 Адрес: ${session.checkout.address}`;
   const text =
     `📋 Проверьте заказ\n\n${cartLinesText(lines)}\n\n` +
@@ -211,22 +205,18 @@ function summaryText(session: BotSession): {
 
 function adminOrderText(orderNumber: number, session: BotSession): string {
   const { lines, subtotal, deliveryCost } = summaryText(session);
-  const method = session.checkout.method ?? "delivery";
-  const addressLabel =
-    method === "pickup"
-      ? `📍 Получение: самовывоз (${DELIVERY_ADDRESS})`
-      : `📍 Адрес: ${session.checkout.address}`;
-  return (
-    `🔔 НОВЫЙ ЗАКАЗ #${orderNumber}\n\n` +
-    `${cartLinesText(lines)}\n\n` +
-    `${method === "pickup" ? "🏠 Самовывоз — 0 ₽" : `🚚 Доставка — ${formatPrice(deliveryCost)}`}\n` +
-    `💰 ИТОГО: ${formatPrice(subtotal + deliveryCost)}\n\n` +
-    `👤 Клиент: ${session.checkout.name}\n` +
-    `📞 Телефон: ${session.checkout.phone}\n` +
-    `${addressLabel}\n` +
-    `💳 Оплата: ${session.checkout.payment === "cash" ? "наличными" : "картой"}\n` +
-    `📲 Источник: Telegram`
-  );
+  return formatAdminOrder({
+    orderNumber,
+    lines,
+    subtotal,
+    deliveryCost,
+    method: session.checkout.method ?? "delivery",
+    customerName: session.checkout.name,
+    phone: session.checkout.phone,
+    address: session.checkout.address,
+    paymentLabel: session.checkout.payment === "cash" ? "наличными" : "картой",
+    source: "Telegram",
+  });
 }
 
 /* ------------------------------------------------------------------ */

@@ -51,6 +51,7 @@ export function Checkout({
   const [form, setForm] = useState<CheckoutForm>(emptyForm);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const deliveryCost = getDeliveryCost(cart.subtotal, method);
   const total = cart.subtotal + deliveryCost;
@@ -82,6 +83,7 @@ export function Checkout({
     if (!validate()) return;
 
     setSubmitting(true);
+    setSubmitError(null);
     try {
       const order = await submitOrder({
         lines: cart.lines,
@@ -102,6 +104,14 @@ export function Checkout({
       });
       cart.clearCart();
       onPlaced(order);
+    } catch (error) {
+      // orderService гарантирует человекочитающее RU-сообщение без секретов;
+      // корзина и введённые данные сохраняются — можно повторить отправку.
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Не удалось отправить заказ. Попробуйте ещё раз.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -229,6 +239,11 @@ export function Checkout({
       </div>
 
       <div className="border-t border-white/[0.07] px-6 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+        {submitError && (
+          <p role="alert" className="mb-3 text-xs text-hot">
+            {submitError}
+          </p>
+        )}
         <div className="flex gap-3">
           <Button
             variant="ghost"
